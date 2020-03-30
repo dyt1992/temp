@@ -1,7 +1,7 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { Request, Response } from 'express';
 import { parse } from 'url';
-import { TableListItem, TableListParams } from '@/pages/ListTableList/data';
+import { TableListItem, TableListParams } from '@/pages/template/data';
 
 // mock tableListDataSource
 const genList = (current: number, pageSize: number) => {
@@ -11,27 +11,72 @@ const genList = (current: number, pageSize: number) => {
     const index = (current - 1) * 10 + i;
     tableListDataSource.push({
       key: index,
-      disabled: i % 6 === 0,
-      href: 'https://ant.design',
-      avatar: [
-        'https://gw.alipayobjects.com/zos/rmsportal/eeHMaZBwmTvLdIwMfBpg.png',
-        'https://gw.alipayobjects.com/zos/rmsportal/udxAbMEhpwthVVcjLXik.png',
-      ][i % 2],
-      name: `TradeCode ${index}`,
-      owner: '曲丽丽',
-      desc: '这是一段描述',
-      callNo: Math.floor(Math.random() * 1000),
-      status: Math.floor(Math.random() * 10) % 4,
-      updatedAt: new Date(),
-      createdAt: new Date(),
-      progress: Math.ceil(Math.random() * 100),
+      // disabled: i % 6 === 0,
+      // href: 'https://ant.design',
+      // avatar: [
+      //   'https://gw.alipayobjects.com/zos/rmsportal/eeHMaZBwmTvLdIwMfBpg.png',
+      //   'https://gw.alipayobjects.com/zos/rmsportal/udxAbMEhpwthVVcjLXik.png',
+      // ][i % 2],
+      // name: `TradeCode ${index}`,
+      // owner: '曲丽丽',
+      // desc: '这是一段描述',
+      // callNo: Math.floor(Math.random() * 1000),
+      // status: Math.floor(Math.random() * 10) % 4,
+      // updatedAt: new Date(),
+      // createdAt: new Date(),
+      // progress: Math.ceil(Math.random() * 100),
+      system: 'lippi-industry-card',
+      code: `com.dingtalk.industry.card${index}`,
+      singlton: (Math.floor(Math.random() * 10) % 2) ? true : false,
+      menu_category: `教育打卡 ${index}`,
+      menu_name: `教育打卡${index}_实例`,
+      schema: {
+        "activityId": {
+          "type": "integer",
+          "x-component": "input",
+          "title": "活动id"
+        },
+        "activityTag": {
+          "type": "string",
+          "x-component": "input",
+          "title": "活动tag"
+        },
+        "name": {
+          "type": "string",
+          "x-component": "input",
+          "title": "活动名称"
+        },
+        "bannerUrl": {
+          "type": "string",
+          "x-component": "input",
+          "title": "bannerUrl地址"
+        },
+        "desc": {
+          "type": "string",
+          "x-component": "input",
+          "title": "活动描述"
+        },
+        "startDate": {
+          "type": "date",
+          "x-component": "input",
+          "title": "开始时间"
+        },
+        "endDate": {
+          "type": "date",
+          "x-component": "input",
+          "title": "结束时间"
+        }
+      },
+      push_config: '',
+      fzr: 'test'
     });
   }
   tableListDataSource.reverse();
+  console.log(tableListDataSource);
   return tableListDataSource;
 };
 
-let tableListDataSource = genList(1, 100);
+let tableListDataSource = genList(1, 10);
 
 function getRule(req: Request, res: Response, u: string) {
   let realUrl = u;

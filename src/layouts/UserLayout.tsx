@@ -1,8 +1,7 @@
-import { DefaultFooter, MenuDataItem, getMenuData, getPageTitle } from '@ant-design/pro-layout';
-import { Helmet, HelmetProvider } from 'react-helmet-async';
-import { Link, useIntl, ConnectProps, connect } from 'umi';
+import { DefaultFooter, MenuDataItem } from '@ant-design/pro-layout';
+import { HelmetProvider } from 'react-helmet-async';
+import { Link, ConnectProps, connect } from 'umi';
 import React from 'react';
-import SelectLang from '@/components/SelectLang';
 import { ConnectState } from '@/models/connect';
 import logo from '../assets/logo.svg';
 import styles from './UserLayout.less';
@@ -14,37 +13,37 @@ export interface UserLayoutProps extends Partial<ConnectProps> {
 }
 
 const UserLayout: React.FC<UserLayoutProps> = (props) => {
-  const {
-    route = {
-      routes: [],
-    },
-  } = props;
-  const { routes = [] } = route;
+  // const {
+  //   route = {
+  //     routes: [],
+  //   },
+  // } = props;
+  // const { routes = [] } = route;
   const {
     children,
-    location = {
-      pathname: '',
-    },
+    // location = {
+    //   pathname: '',
+    // },
   } = props;
-  const { formatMessage } = useIntl();
-  const { breadcrumb } = getMenuData(routes);
-  const title = getPageTitle({
-    pathname: location.pathname,
-    formatMessage,
-    breadcrumb,
-    ...props,
-  });
+  // const { formatMessage } = useIntl();
+  // const { breadcrumb } = getMenuData(routes);
+  // const title = getPageTitle({
+  //   pathname: location.pathname,
+  //   formatMessage,
+  //   breadcrumb,
+  //   ...props,
+  // });
   return (
     <HelmetProvider>
-      <Helmet>
+      {/* <Helmet>
         <title>{title}</title>
         <meta name="description" content={title} />
-      </Helmet>
+      </Helmet> */}
 
       <div className={styles.container}>
-        <div className={styles.lang}>
+        {/* <div className={styles.lang}>
           <SelectLang />
-        </div>
+        </div> */}
         <div className={styles.content}>
           <div className={styles.top}>
             <div className={styles.header}>

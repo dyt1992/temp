@@ -7,16 +7,17 @@ import ProLayout, {
   MenuDataItem,
   BasicLayoutProps as ProLayoutProps,
   Settings,
-  DefaultFooter,
 } from '@ant-design/pro-layout';
-import React, { useEffect } from 'react';
-import { Link, useIntl, connect, Dispatch } from 'umi';
-import { GithubOutlined } from '@ant-design/icons';
+import React, { useEffect, useState } from 'react';
+import { Link, connect, Dispatch } from 'umi';
 import { Result, Button } from 'antd';
 import Authorized from '@/utils/Authorized';
 import RightContent from '@/components/GlobalHeader/RightContent';
 import { ConnectState } from '@/models/connect';
 import { getAuthorityFromRouter } from '@/utils/utils';
+import {
+  AppstoreOutlined
+} from '@ant-design/icons';
 import logo from '../assets/logo.svg';
 
 const noMatch = (
@@ -52,37 +53,37 @@ export type BasicLayoutContext = { [K in 'location']: BasicLayoutProps[K] } & {
 
 const menuDataRender = (menuList: MenuDataItem[]): MenuDataItem[] =>
   menuList.map((item) => {
+    console.log(item);
     const localItem = { ...item, children: item.children ? menuDataRender(item.children) : [] };
     return Authorized.check(item.authority, localItem, null) as MenuDataItem;
   });
 
-const defaultFooterDom = (
-  <DefaultFooter
-    copyright="2019 蚂蚁金服体验技术部出品"
-    links={[
-      {
-        key: 'Ant Design Pro',
-        title: 'Ant Design Pro',
-        href: 'https://pro.ant.design',
-        blankTarget: true,
-      },
-      {
-        key: 'github',
-        title: <GithubOutlined />,
-        href: 'https://github.com/ant-design/ant-design-pro',
-        blankTarget: true,
-      },
-      {
-        key: 'Ant Design',
-        title: 'Ant Design',
-        href: 'https://ant.design',
-        blankTarget: true,
-      },
-    ]}
-  />
-);
+const data: MenuDataItem[] = [{
+  path: '/welcome',
+  name: 'welcome',
+  title: 'welcome'
+},
+{
+  path: '/test',
+  name: 'test',
+  title: 'test'
+}, {
+  path: '/instance',
+  name: 'toolbar配置',
+  type: 'instance',
+  code: 'test.a.b.c',
+}, {
+  path: '/template',
+  name: '模板配置',
+  type: 'instance',
+}].map((item) => {
+  return item as MenuDataItem
+});
 
 const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
+
+  const [menuData] = useState<MenuDataItem[]>(data);
+
   const {
     dispatch,
     children,
@@ -118,12 +119,10 @@ const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
   const authorized = getAuthorityFromRouter(props.route.routes, location.pathname || '/') || {
     authority: undefined,
   };
-  const { formatMessage } = useIntl();
 
   return (
     <ProLayout
       logo={logo}
-      formatMessage={formatMessage}
       menuHeaderRender={(logoDom, titleDom) => (
         <Link to="/">
           {logoDom}
@@ -135,13 +134,15 @@ const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
         if (menuItemProps.isUrl || menuItemProps.children || !menuItemProps.path) {
           return defaultDom;
         }
-
-        return <Link to={menuItemProps.path}>{defaultDom}</Link>;
+        if (menuItemProps.type === 'instance') {
+          return <Link to={`${menuItemProps.path}?code=${encodeURIComponent(menuItemProps.code)}`}><AppstoreOutlined />{defaultDom}</Link>;
+        }
+        return <Link to={`${menuItemProps.path}`}>{defaultDom}</Link>;
       }}
       breadcrumbRender={(routers = []) => [
         {
           path: '/',
-          breadcrumbName: formatMessage({ id: 'menu.home' }),
+          breadcrumbName: "首页",
         },
         ...routers,
       ]}
@@ -150,11 +151,13 @@ const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
         return first ? (
           <Link to={paths.join('/')}>{route.breadcrumbName}</Link>
         ) : (
-          <span>{route.breadcrumbName}</span>
-        );
+            <span>{route.breadcrumbName}</span>
+          );
       }}
-      footerRender={() => defaultFooterDom}
-      menuDataRender={menuDataRender}
+      // footerRender={() => defaultFooterDom}
+      // menuData={(menuData) => }
+      // menuDataRender={menuDataRender}
+      menuDataRender={() => menuData}
       rightContentRender={() => <RightContent />}
       {...props}
       {...settings}
