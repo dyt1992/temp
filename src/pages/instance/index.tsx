@@ -64,14 +64,18 @@ const handleUpdate = async (fields: FormValueType) => {
 };
 
 const handlePushConfig = async (fields: PushConfigParams) => {
-  // await queryPushEnvUrl({ key: fields.env });
   const hide = message.loading('正在推送');
   try {
-    const response = await pushConfig(fields);
-    if (response.success) {
-      message.success('推送成功');
+    const res = await queryPushEnvUrl({ key: fields.env });
+    if (res.success) {
+      const response = await pushConfig(fields, res.result);
+      if (response.success) {
+        message.success('推送成功');
+      } else {
+        message.error(response.errorMsg || '推送失败请重试！');
+      }
     } else {
-      message.error(response.errorMsg || '推送失败请重试！');
+      message.error(res.errorMsg || '推送失败请重试！');
     }
     hide();
     return true;

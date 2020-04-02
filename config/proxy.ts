@@ -7,50 +7,42 @@
  */
 export default {
   dev: {
-    '/approvalProcess': {
-      target: 'http://10.255.3.62/',
-      // target: 'http://localhost:7001',
-      changeOrigin: true,
-      // pathRewrite: { '^/': '' }
-    },
-    '/template/': {
-      target: 'http://10.255.3.62:7001/',
-      changeOrigin: true,
-    },
-    '/templateInstance/': {
-      target: 'http://10.255.3.62:7001/',
-      changeOrigin: true,
-    },
-    '/push/': {
-      target: 'http://10.255.3.62:7001/',
-      changeOrigin: true,
-    },
-    '/user/': {
-      target: 'http://10.255.3.62:7001/',
-      changeOrigin: true,
-    },
-    // '/approvalProcess': {
-    //   target: 'http://11.159.166.201:7001',
-    //   // target: 'http://localhost:7001',
-    //   changeOrigin: true,
-    //   // pathRewrite: { '^/': '' }
-    // },
     // '/template/': {
-    //   target: 'http://100.81.126.102:7001//',
+    //   target: 'http://10.255.3.62:7001/',
     //   changeOrigin: true,
     // },
     // '/templateInstance/': {
-    //   target: 'http://100.81.126.102:7001//',
+    //   target: 'http://10.255.3.62:7001/',
     //   changeOrigin: true,
     // },
     // '/push/': {
-    //   target: 'http://100.81.126.102:7001//',
+    //   target: 'http://10.255.3.62:7001/',
     //   changeOrigin: true,
     // },
     // '/user/': {
-    //   target: 'http://100.81.126.102:7001//',
+    //   target: 'http://10.255.3.62:7001/',
     //   changeOrigin: true,
     // },
+    '/template/': {
+      target: 'http://100.81.126.102:7001//',
+      changeOrigin: true,
+    },
+    '/templateInstance/': {
+      target: 'http://100.81.126.102:7001//',
+      changeOrigin: true,
+    },
+    '/push/': {
+      target: 'http://100.81.126.102:7001//',
+      changeOrigin: true,
+    },
+    '/user/': {
+      target: 'http://100.81.126.102:7001//',
+      changeOrigin: true,
+    },
+    // 'http://100.81.126.102:7001/': {
+    //   target: 'http://100.81.126.102:7001//',
+    //   changeOrigin: true,
+    // }
   },
   test: {
     '/api/': {

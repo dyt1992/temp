@@ -26,8 +26,8 @@ export async function updateInstance(params: TableListItem): Promise<ResponseDat
   });
 }
 
-export async function pushConfig(params: any): Promise<ResponseData> {
-  return request('/push/pushConfig', {
+export async function pushConfig(params: any, baseUrl: string): Promise<ResponseData> {
+  return request(`${baseUrl}/push/pushConfig`, {
     params,
   });
 }
