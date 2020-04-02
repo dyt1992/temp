@@ -108,7 +108,7 @@ const TableList: React.FC<{}> = (props) => {
         request={(params) => queryTemplate(params)}
         columns={columns}
       />
-      {stepFormValues && Object.keys(stepFormValues).length ? (
+      {stepFormValues && Object.keys(stepFormValues).length && updateModalVisible? (
         <UpdateForm
           onSubmit={async (value) => {
             const success = await handleUpdate(value);
@@ -128,7 +128,7 @@ const TableList: React.FC<{}> = (props) => {
           values={stepFormValues}
         />
       ) : null}
-      {stepFormValues && Object.keys(stepFormValues).length ? (
+      {stepFormValues && Object.keys(stepFormValues).length && previewModalVisible ? (
         <Preview
           onCancel={() => {
             handlePreviewModalVisible(false);

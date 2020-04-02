@@ -106,6 +106,13 @@ const TableList: React.FC<{}> = (props: any) => {
       title: '负责人',
       dataIndex: 'fzr',
       hideInSearch: true,
+      render: (_, record) => (
+        <>
+          {
+            JSON.parse(record.userStr || '[]').map((item: any) => item.nickNameCn).join('')
+          }
+        </>
+      ),
     },
     {
       title: '操作',
@@ -183,21 +190,15 @@ const TableList: React.FC<{}> = (props: any) => {
           </Button>
         ]}
       />
-      <CreateForm onCancel={() => handleModalVisible(false)} modalVisible={createModalVisible}>
-        <ProTable<TableListItem, TableListItem>
-          onSubmit={async (value) => {
-            const success = await handleAdd(value, location.query.templateId);
-            if (success) {
-              handleModalVisible(false);
-              if (actionRef.current) {
-                actionRef.current.reload();
-              }
-            }
-          }}
-          rowKey="key"
-          type="form"
-          columns={columns}
-        />
+      <CreateForm onCancel={() => handleModalVisible(false)} modalVisible={createModalVisible} onSubmit={async (value) => {
+        const success = await handleAdd(value, location.query.templateId);
+        if (success) {
+          handleModalVisible(false);
+          if (actionRef.current) {
+            actionRef.current.reload();
+          }
+        }
+      }}>
       </CreateForm>
       {stepFormValues && Object.keys(stepFormValues).length ? (
         <UpdateForm

@@ -3,7 +3,11 @@ import { Select, Spin } from 'antd';
 import { queryUser } from "@/services/user"
 
 interface SelectUserProps {
-    value: [],
+    value: Array<{
+        value: string
+        label: string
+        key: string
+    }>,
     onChange: (value: any) => void
 }
 
@@ -12,8 +16,6 @@ const SelectUser: React.FC<SelectUserProps> = (props) => {
         onChange: handleChange,
         value,
     } = props;
-    console.log(value);
-    console.log(handleChange)
     const [fetching, setFetching] = useState<boolean>(false);
     const [user, setUser] = useState<Array<{ empId: string, nickNameCn: string, }>>([])
 

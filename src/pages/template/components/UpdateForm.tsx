@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Form, Button, Input, Radio, Drawer, Card, message, Select, Spin } from 'antd';
-import { queryUser } from "@/services/user"
+import { Form, Button, Input, Radio, Drawer, Card, message } from 'antd';
+import SelectUser from "@/components/SelectUser";
 
 import { TableListItem } from '../data.d';
 
@@ -46,8 +46,6 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
   } = props;
 
   const [form] = Form.useForm();
-  const [fetching, setFetching] = useState<boolean>(false);
-  const [user, setUser] = useState<Array<{ empId: string, nickNameCn: string, }>>([])
 
   let pushConfig: any;
 
@@ -65,7 +63,7 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
 
 
   const [formVals, setFormVals] = useState<FormValueType>({
-    userArr: JSON.parse(values.userStr || '[]'),
+    userArr: JSON.parse(values.userStr || '[]').map((item: any) => { return { key: item.empId, value: item.empId, label: item.nickNameCn } }),
     id: props.values.id,
     menuCategory: values.menuCategory,
     menuName: values.menuName,
@@ -78,15 +76,6 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
   });
 
   const { push_config } = formVals;
-
-  const fetchUser = async (value: string) => {
-    setFetching(true);
-    const response = await queryUser({
-      nickName: value
-    });
-    setFetching(false);
-    setUser(response);
-  }
 
   return (
     <Drawer
@@ -157,24 +146,9 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
           <FormItem
             label="负责人"
           >
-            <Select
-              mode="multiple"
-              labelInValue
-              value={formVals.userArr}
-              placeholder="Select users"
-              notFoundContent={fetching ? <Spin size="small" /> : null}
-              filterOption={false}
-              onSearch={fetchUser}
-              onChange={(value) => {
-                setFormVals({ ...formVals, userArr: value })
-                setUser([]);
-                setFetching(false);
-              }}
-            >
-              {user.map(item => (
-                <Select.Option value={item.empId} key={item.empId}>{item.nickNameCn}</Select.Option>
-              ))}
-            </Select>
+            <SelectUser value={formVals.userArr} onChange={(value) => {
+              setFormVals({ ...formVals, userArr: value })
+            }} />
           </FormItem>
           <FormItem
             name={['push_config', 'type']}

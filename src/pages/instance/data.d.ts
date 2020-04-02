@@ -6,7 +6,7 @@ export interface TableListItem {
   instanceName?: string;
   pushStatus?: string;
   configData?: string;
-  fzr?: string;
+  userStr?: string;
 }
 
 export interface TableListParams {
