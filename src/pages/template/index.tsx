@@ -4,8 +4,9 @@ import { PageHeaderWrapper } from '@ant-design/pro-layout';
 import ProTable, { ProColumns, ActionType } from '@ant-design/pro-table';
 
 import UpdateForm, { FormValueType } from './components/UpdateForm';
-import { TableListItem } from './data';
-import { queryRule, updateRule } from './service';
+import Preview from './components/Preview';
+import { TableListItem, TableListParams } from './data';
+import { queryTemplate, updateTemplate } from './service';
 
 /**
  * 更新节点
@@ -14,11 +15,7 @@ import { queryRule, updateRule } from './service';
 const handleUpdate = async (fields: FormValueType) => {
   const hide = message.loading('正在配置');
   try {
-    await updateRule({
-      // name: fields.name,
-      // desc: fields.desc,
-      key: fields.key,
-    });
+    await updateTemplate(fields);
     hide();
 
     message.success('配置成功');
@@ -30,19 +27,20 @@ const handleUpdate = async (fields: FormValueType) => {
   }
 };
 
-const TableList: React.FC<{}> = () => {
+const TableList: React.FC<{}> = (props) => {
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
+  const [previewModalVisible, handlePreviewModalVisible] = useState<boolean>(false);
   const [stepFormValues, setStepFormValues] = useState({});
   const actionRef = useRef<ActionType>();
   const columns: ProColumns<TableListItem>[] = [
     {
       title: '分类',
-      dataIndex: 'menu_category',
+      dataIndex: 'menuCategory',
       hideInForm: true,
     },
     {
       title: '名称',
-      dataIndex: 'menu_name',
+      dataIndex: 'menuName',
       hideInForm: true,
       hideInSearch: true,
     },
@@ -64,7 +62,7 @@ const TableList: React.FC<{}> = () => {
       hideInSearch: true,
       render: (_, record) => (
         <>
-          {record.singlton === true ? '单例' : '多例'}
+          {record.singlton === "true" ? '单例' : '多例'}
         </>
       ),
     },
@@ -81,6 +79,11 @@ const TableList: React.FC<{}> = () => {
       hideInForm: true,
       render: (_, record) => (
         <>
+          <a onClick={() => {
+            handlePreviewModalVisible(true);
+            setStepFormValues(record);
+          }}>预览</a>
+          <Divider type="vertical" />
           <a
             onClick={() => {
               handleUpdateModalVisible(true);
@@ -89,8 +92,8 @@ const TableList: React.FC<{}> = () => {
           >
             修改
           </a>
-          <Divider type="vertical" />
-          <a href="">删除</a>
+          {/* <Divider type="vertical" />
+          <a>删除</a> */}
         </>
       ),
     },
@@ -98,11 +101,11 @@ const TableList: React.FC<{}> = () => {
 
   return (
     <PageHeaderWrapper title={false}>
-      <ProTable<TableListItem>
+      <ProTable<TableListItem, TableListParams>
         headerTitle="模板配置"
         actionRef={actionRef}
-        rowKey="key"
-        request={(params) => queryRule(params)}
+        rowKey="id"
+        request={(params) => queryTemplate(params)}
         columns={columns}
       />
       {stepFormValues && Object.keys(stepFormValues).length ? (
@@ -122,6 +125,15 @@ const TableList: React.FC<{}> = () => {
             setStepFormValues({});
           }}
           updateModalVisible={updateModalVisible}
+          values={stepFormValues}
+        />
+      ) : null}
+      {stepFormValues && Object.keys(stepFormValues).length ? (
+        <Preview
+          onCancel={() => {
+            handlePreviewModalVisible(false);
+          }}
+          previewModalVisible={previewModalVisible}
           values={stepFormValues}
         />
       ) : null}

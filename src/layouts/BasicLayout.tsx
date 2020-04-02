@@ -19,6 +19,7 @@ import {
   AppstoreOutlined
 } from '@ant-design/icons';
 import logo from '../assets/logo.svg';
+import { queryMenu } from "@/services/menu";
 
 const noMatch = (
   <Result
@@ -42,47 +43,16 @@ export interface BasicLayoutProps extends ProLayoutProps {
   settings: Settings;
   dispatch: Dispatch;
 }
+
 export type BasicLayoutContext = { [K in 'location']: BasicLayoutProps[K] } & {
   breadcrumbNameMap: {
     [path: string]: MenuDataItem;
   };
 };
-/**
- * use Authorized check all menu item
- */
-
-const menuDataRender = (menuList: MenuDataItem[]): MenuDataItem[] =>
-  menuList.map((item) => {
-    console.log(item);
-    const localItem = { ...item, children: item.children ? menuDataRender(item.children) : [] };
-    return Authorized.check(item.authority, localItem, null) as MenuDataItem;
-  });
-
-const data: MenuDataItem[] = [{
-  path: '/welcome',
-  name: 'welcome',
-  title: 'welcome'
-},
-{
-  path: '/test',
-  name: 'test',
-  title: 'test'
-}, {
-  path: '/instance',
-  name: 'toolbar配置',
-  type: 'instance',
-  code: 'test.a.b.c',
-}, {
-  path: '/template',
-  name: '模板配置',
-  type: 'instance',
-}].map((item) => {
-  return item as MenuDataItem
-});
 
 const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
 
-  const [menuData] = useState<MenuDataItem[]>(data);
+  const [menuData, setMenuData] = useState<MenuDataItem[]>([]);
 
   const {
     dispatch,
@@ -102,6 +72,39 @@ const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
         type: 'user/fetchCurrent',
       });
     }
+
+    queryMenu().then(async (response) => {
+      if (response.success) {
+        let menu: Array<MenuDataItem> = [{
+          name: '系统配置',
+          path: '/system/config',
+          children: [{
+            path: '/system/config/template',
+            icon: false,
+            name: '模板配置',
+          }]
+        }]
+        const data: Array<any> = response.result;
+        data.forEach((item) => {
+          let temp: MenuDataItem = { name: item.menuCategory, children: [] };
+          let tempChild: MenuDataItem = {
+            name: item.menuName,
+            path: '/singlton',
+            icon: false,
+            singlton: item.singlton,
+            templateCode: item.code,
+            templateId: item.id
+          }
+          if (item.singlton === "false") {
+            tempChild.path = '/instance';
+          }
+          temp.children?.push(tempChild);
+          menu.push(temp);
+        })
+        setMenuData(menu);
+      }
+    })
+
   }, []);
   /**
    * init variables
@@ -127,17 +130,21 @@ const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
         <Link to="/">
           {logoDom}
           {titleDom}
+          {/* {titleDom ? <h1>新教育运营后台</h1> : null} */}
         </Link>
       )}
       onCollapse={handleMenuCollapse}
+      subMenuItemRender={(menuItemProps, defaultDom) => {
+        return <><AppstoreOutlined /><span>{defaultDom}</span></>
+      }}
       menuItemRender={(menuItemProps, defaultDom) => {
         if (menuItemProps.isUrl || menuItemProps.children || !menuItemProps.path) {
-          return defaultDom;
+          return <><AppstoreOutlined />{defaultDom}</>;
         }
-        if (menuItemProps.type === 'instance') {
-          return <Link to={`${menuItemProps.path}?code=${encodeURIComponent(menuItemProps.code)}`}><AppstoreOutlined />{defaultDom}</Link>;
+        if (menuItemProps.singlton !== undefined) {
+          return <Link to={`${menuItemProps.path}?templateCode=${encodeURIComponent(menuItemProps.templateCode)}&templateId=${encodeURIComponent(menuItemProps.templateId)}`}>{menuItemProps.icon && <AppstoreOutlined />}{defaultDom}</Link>;
         }
-        return <Link to={`${menuItemProps.path}`}>{defaultDom}</Link>;
+        return <Link to={`${menuItemProps.path}`}>{menuItemProps.icon && <AppstoreOutlined />}{defaultDom}</Link>;
       }}
       breadcrumbRender={(routers = []) => [
         {
@@ -154,9 +161,6 @@ const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
             <span>{route.breadcrumbName}</span>
           );
       }}
-      // footerRender={() => defaultFooterDom}
-      // menuData={(menuData) => }
-      // menuDataRender={menuDataRender}
       menuDataRender={() => menuData}
       rightContentRender={() => <RightContent />}
       {...props}

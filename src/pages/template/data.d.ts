@@ -1,18 +1,14 @@
 export interface TableListItem {
-  key: number;
+  id?: number;
   system?: string;
   code?: string;
-  singlton?: boolean;
-  menu_category?: string;
-  menu_name?: string;
-  schema?: {
-    [key: string]: {
-      [key: string]: string
-    }
-  };
-  push_config?: string;
+  singlton?: string;
+  menuCategory?: string;
+  menuName?: string;
+  jsonSchema?: string;
+  pushConfig?: string;
 
-  fzr?: string;
+  userStr?: string;
 }
 
 export interface TableListPagination {
@@ -33,5 +29,5 @@ export interface TableListParams {
   desc?: string;
   key?: number;
   pageSize?: number;
-  currentPage?: number;
+  current?: number;
 }

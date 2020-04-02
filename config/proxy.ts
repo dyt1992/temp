@@ -7,24 +7,41 @@
  */
 export default {
   dev: {
-    '/api/': {
-      target: 'https://preview.pro.ant.design',
+    '/approvalProcess': {
+      target: 'http://11.159.166.201:7001',
+      // target: 'http://localhost:7001',
       changeOrigin: true,
-      pathRewrite: { '^': '' },
+      // pathRewrite: { '^/': '' }
+    },
+    '/template/': {
+      target: 'http://100.81.126.102:7001//',
+      changeOrigin: true,
+    },
+    '/templateInstance/': {
+      target: 'http://100.81.126.102:7001//',
+      changeOrigin: true,
+    },
+    '/push/': {
+      target: 'http://100.81.126.102:7001//',
+      changeOrigin: true,
+    },
+    '/user/': {
+      target: 'http://100.81.126.102:7001//',
+      changeOrigin: true,
     },
   },
   test: {
     '/api/': {
-      target: 'https://preview.pro.ant.design',
+      target: 'http://100.81.126.102:7001//',
       changeOrigin: true,
-      pathRewrite: { '^': '' },
-    },
+      pathRewrite: { '^/api': '' },
+    }
   },
   pre: {
     '/api/': {
-      target: 'your pre url',
+      target: 'http://100.81.126.102:7001//',
       changeOrigin: true,
-      pathRewrite: { '^': '' },
-    },
+      pathRewrite: { '^/api': '' },
+    }
   },
 };

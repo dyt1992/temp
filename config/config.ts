@@ -21,7 +21,7 @@ export default defineConfig({
     // default zh-CN
     default: 'zh-CN',
     // default true, when it is true, will use `navigator.language` overwrite default
-    antd: true,
+    antd: false,
     baseNavigator: true,
   },
   dynamicImport: {
@@ -50,35 +50,33 @@ export default defineConfig({
         {
           path: '/',
           component: '../layouts/BasicLayout',
-          authority: ['admin', 'user'],
+          // authority: ['admin', 'user'],
           routes: [
             {
               path: '/',
-              redirect: '/welcome',
+              redirect: '/system/config/template',
             },
             {
-              path: '/welcome',
-              name: 'welcome',
+              path: '/system/config',
+              name: 'systemconfig',
               icon: 'smile',
-              component: './Welcome',
-            },
-            {
-              path: '/test',
-              name: 'test',
-              icon: 'smile',
-              component: './test',
+              routes: [
+                {
+                  name: 'templateconfig',
+                  path: '/system/config/template',
+                  component: './template',
+                }
+              ],
             },
             {
               path: '/instance',
               name: 'instance',
-              icon: 'smile',
               component: './instance',
             },
             {
-              path: '/template',
-              name: 'template',
-              icon: 'smile',
-              component: './template',
+              path: '/singlton',
+              name: 'singlton',
+              component: './singlton',
             },
             {
               component: './404',
